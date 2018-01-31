@@ -92,8 +92,10 @@ public class MyS3Dump {
                 .collect(Collectors.<CompletableFuture<WorkerResult>>toList());
     }
 
-    private void addEOFSignal(BlockingQueue<char[][]> queue, int num) {
-        IntStream.range(0, num).forEach(dummy -> queue.add(new char[0][0]));
+    private void addEOFSignal(BlockingQueue<char[][]> queue, int num) throws InterruptedException {
+        for (int i = 0; i < num; i++) {
+            queue.put(new char[0][0]);
+        }
     }
 
     private Long totalRowCount(List<WorkerResult> results) throws InterruptedException, ExecutionException {

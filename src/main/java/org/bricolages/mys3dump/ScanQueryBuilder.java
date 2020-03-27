@@ -1,10 +1,10 @@
 package org.bricolages.mys3dump;
 
 import org.apache.log4j.Logger;
-
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,15 +20,17 @@ class ScanQueryBuilder {
     private String partitionColumn;
     private int partitionNumber;
 
-    public ScanQueryBuilder(String table) {
+    public ScanQueryBuilder(MySQLDataSource ds, String table) {
+        this.ds = ds;
         this.table = table;
     }
 
     public List<ScanQuery> getScanQueries() throws SQLException {
+        ResultSetSchema schema = this.ds.getTableSchema(table);
         if (hasPartitionInfo()) {
-            return newPartitionStream().map(part -> new ScanQuery(getQuery(true), new Partition(partitionColumn, part.start, part.end))).collect(Collectors.toList());
+            return newPartitionStream().map(part -> new ScanQuery(getQuery(schema, true), new Partition(partitionColumn, part.start, part.end))).collect(Collectors.toList());
         } else {
-            return Collections.singletonList(new ScanQuery(getQuery(false)));
+            return Collections.singletonList(new ScanQuery(getQuery(schema, false)));
         }
     }
 
@@ -37,8 +39,7 @@ class ScanQueryBuilder {
         return this;
     }
 
-    public ScanQueryBuilder setPartitionInfo(MySQLDataSource ds, String partitionColumn, int partitionNumber) {
-        this.ds = ds;
+    public ScanQueryBuilder setPartitionInfo(String partitionColumn, int partitionNumber) {
         this.partitionColumn = partitionColumn;
         this.partitionNumber = partitionNumber > 0 ? partitionNumber : 1;
         return this;
@@ -48,15 +49,19 @@ class ScanQueryBuilder {
         return partitionColumn != null;
     }
 
-    String getQuery(boolean withPlaceHolder) {
+    String getQuery(ResultSetSchema schema, boolean withPlaceHolder) {
         if (query != null) {
             if (withPlaceHolder && !query.contains(ScanQuery.PLACE_HOLDER)) {
                 throw new IllegalArgumentException("No place holder in partition query: " + query);
             }
             return query;
         }
-        String query = "SELECT * FROM " + table;
-        if (withPlaceHolder) query = query + " WHERE " + ScanQuery.PLACE_HOLDER;
+        StringJoiner sel = new StringJoiner(",");
+        schema.getColumns().forEach(c -> sel.add(c.sqlExpression()));
+        StringBuilder qry = new StringBuilder();
+        qry.append("SELECT ").append(sel.toString()).append(" FROM ").append(table);
+        if (withPlaceHolder) qry.append(" WHERE ").append(ScanQuery.PLACE_HOLDER);
+        query = qry.toString();
         return query;
     }
 

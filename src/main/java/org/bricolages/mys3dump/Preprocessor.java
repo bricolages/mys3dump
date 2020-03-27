@@ -42,12 +42,12 @@ class Preprocessor {
 
     Map<Integer, List<PreprocessOperation>> getColumnOperations(List<PreprocessOperation> ops, ResultSetSchema rsSchema) {
         Map<Integer, List<PreprocessOperation>> colOps = new HashMap<>();
-        for (int i = 0; i < rsSchema.columnCount; i++) {
-            int type = rsSchema.columnTypes[i];
+        for (int i = 0; i < rsSchema.getColumnCount(); i++) {
+            int type = rsSchema.getColumnTypes().get(i);
             List<PreprocessOperation> applicable_ops = ops.stream().filter(op -> op.isApplicableTo(type)).filter(op -> op.isValid()).collect(Collectors.toList());
             if (!applicable_ops.isEmpty()) {
                 colOps.put(i, applicable_ops);
-                logger.info(applicable_ops.stream().map(op -> op.toString()).collect(Collectors.joining(", ", "Set preproc for " + rsSchema.columnNames[i] + ": ", "")));
+                logger.info(applicable_ops.stream().map(op -> op.toString()).collect(Collectors.joining(", ", "Set preproc for " + rsSchema.getColumnNames().get(i) + ": ", "")));
             }
         }
         return colOps;

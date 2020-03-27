@@ -46,12 +46,23 @@ class MySQLDataSource {
         return rows;
     }
 
-    ResultSetMetaData getMetadata(ScanQuery query) throws SQLException {
+    ResultSetMetaData getQueryMetadata(ScanQuery query) throws SQLException {
         String sql = query + " LIMIT 1";
         logger.info("Execute query for metadata: " + sql);
         try (ResultSet rs = newConnection().createStatement().executeQuery(sql)) {
             logger.info("Query returned: " + sql);
             return rs.getMetaData();
+        }
+    }
+
+    ResultSetSchema getTableSchema(String table) throws SQLException {
+        DatabaseMetaData meta = newConnection().getMetaData();
+        try (ResultSet rs = meta.getColumns(null, null, table, "%")) {
+            List<ResultSetColumn> columns = new ArrayList<>();
+            while (rs.next()) {
+                columns.add(new ResultSetColumn(rs.getString("COLUMN_NAME"), rs.getInt("DATA_TYPE"), rs.getString("TYPE_NAME")));
+            }
+            return new ResultSetSchema(columns);
         }
     }
 

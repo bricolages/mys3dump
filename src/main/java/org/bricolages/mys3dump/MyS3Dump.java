@@ -17,10 +17,10 @@ public class MyS3Dump {
         Parameters params = new Parameters(args);
         MySQLDataSource myds = new MySQLDataSource(params.getHost(), params.getPort(), params.getDatabase(), params.getUsername(), params.getPassword(), params.getConnectionProperty());
         try {
-            ScanQueryBuilder builder = new ScanQueryBuilder(params.getTable()).setQuery(params.getQuery())
-                    .setPartitionInfo(myds, params.getPartitionColumn(), params.getPartitionNumber());
+            ScanQueryBuilder builder = new ScanQueryBuilder(myds, params.getTable()).setQuery(params.getQuery())
+                    .setPartitionInfo(params.getPartitionColumn(), params.getPartitionNumber());
             List<ScanQuery> queries = builder.getScanQueries();
-            ResultSetSchema resultSetSchema = new ResultSetSchema(myds.getMetadata(queries.get(0)));
+            ResultSetSchema resultSetSchema = ResultSetSchema.newInstance(myds.getQueryMetadata(queries.get(0)));
             Preprocessor preprocessor = new Preprocessor(resultSetSchema, new TimeZonePreprocessOperation(params.getSrcZoneOffset(), params.getDstZoneOffset()));
             RowFormatter rowFormatter = RowFormatter.newInstance(params.getFormat(), resultSetSchema);
             RowWriterFactory rowWriterFactory = new S3RowWriterFactory(preprocessor, rowFormatter, new S3OutputLocation(params.getBucket(), params.getPrefix(), params.getObjectKeyDelimiter())

@@ -6,5 +6,5 @@ Dumps MySQL table to S3 parallely.
 
 Following command builds executable JAR file with dependencies.
 ```
-$ mvn assembly:single
+$ mvn package
 ```

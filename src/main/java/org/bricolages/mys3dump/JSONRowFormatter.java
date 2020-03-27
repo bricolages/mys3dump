@@ -2,19 +2,20 @@ package org.bricolages.mys3dump;
 
 import java.nio.CharBuffer;
 import java.sql.Types;
+import java.util.List;
 
 /**
  * Created by shimpei-kodama on 2016/02/26.
  */
 class JSONRowFormatter implements RowFormatter {
-    private final String[] columnNames;
-    private final int[] columnTypes;
+    private final List<String> columnNames;
+    private final List<Integer> columnTypes;
     private final int columnCount;
 
     public JSONRowFormatter(ResultSetSchema rsSchema) {
-        this.columnNames = rsSchema.columnNames;
-        this.columnTypes = rsSchema.columnTypes;
-        this.columnCount = rsSchema.columnTypes.length;
+        this.columnNames = rsSchema.getColumnNames();
+        this.columnTypes = rsSchema.getColumnTypes();
+        this.columnCount = rsSchema.getColumnCount();
     }
 
     @Override
@@ -26,9 +27,9 @@ class JSONRowFormatter implements RowFormatter {
             if (isRowNull(row[i])) continue;
             sb.append(d);
             sb.append('"');
-            sb.append(columnNames[i]);
+            sb.append(columnNames.get(i));
             sb.append("\":");
-            sb.append(formatValue(row[i], columnTypes[i]));
+            sb.append(formatValue(row[i], columnTypes.get(i)));
             d = ",";
         }
         sb.append("}\n");

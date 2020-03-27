@@ -1,7 +1,6 @@
 package org.bricolages.mys3dump;
 
 import org.apache.log4j.Logger;
-
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;

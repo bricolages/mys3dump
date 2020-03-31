@@ -11,13 +11,13 @@ class ResultSetColumnTest {
     void sqlExpression_geometry() {
         String colName = "geom";
         ResultSetColumn c = new ResultSetColumn(colName, Types.BLOB, "GEOMETRY");
-        assertEquals(String.format("ST_AsText(%s) as %s", colName, colName), c.sqlExpression());
+        assertEquals(String.format("ST_AsText(`%s`) as `%s`", colName, colName), c.sqlExpression());
     }
 
     @Test
     void sqlExpression_default() {
         String columnName = "col";
         ResultSetColumn c = new ResultSetColumn(columnName, Types.BLOB, "INTEGER");
-        assertEquals(columnName, c.sqlExpression());
+        assertEquals(String.format("`%s`", columnName), c.sqlExpression());
     }
 }

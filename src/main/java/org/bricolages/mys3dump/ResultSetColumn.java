@@ -15,11 +15,15 @@ class ResultSetColumn {
         String e;
         switch (typeName) {
             case "GEOMETRY":
-                e = String.format("ST_AsText(%s) as %s", name, name);
+                e = String.format("ST_AsText(%s) as %s", quotedName(), quotedName());
                 break;
             default:
-                e = name;
+                e = quotedName();
         }
         return e;
+    }
+
+    String quotedName() {
+        return String.format("`%s`", name);
     }
 }

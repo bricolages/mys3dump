@@ -14,23 +14,23 @@ import java.util.stream.Stream;
 class ScanQueryBuilder {
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    private final String table;
+    private final String tableName;
     private String query;
-    private MySQLDataSource ds;
+    private MySQLDataSource dataSource;
     private String partitionColumn;
     private int partitionNumber;
 
-    public ScanQueryBuilder(MySQLDataSource ds, String table) {
-        this.ds = ds;
-        this.table = table;
+    public ScanQueryBuilder(MySQLDataSource dataSource, String tableName) {
+        this.dataSource = dataSource;
+        this.tableName = tableName;
     }
 
     public List<ScanQuery> getScanQueries() throws SQLException {
-        ResultSetSchema schema = this.ds.getTableSchema(table);
+        ResultSetSchema schema = this.dataSource.getTableSchema(tableName);
         if (hasPartitionInfo()) {
-            return newPartitionStream().map(part -> new ScanQuery(getQuery(schema, true), new Partition(partitionColumn, part.start, part.end))).collect(Collectors.toList());
+            return newPartitionStream().map(part -> new ScanQuery(getQueryWithPlaceHolder(schema), new Partition(partitionColumn, part.start, part.end))).collect(Collectors.toList());
         } else {
-            return Collections.singletonList(new ScanQuery(getQuery(schema, false)));
+            return Collections.singletonList(new ScanQuery(getQuery(schema)));
         }
     }
 
@@ -49,30 +49,48 @@ class ScanQueryBuilder {
         return partitionColumn != null;
     }
 
-    String getQuery(ResultSetSchema schema, boolean withPlaceHolder) {
+    String getQueryWithPlaceHolder(ResultSetSchema schema) {
         if (query != null) {
-            if (withPlaceHolder && !query.contains(ScanQuery.PLACE_HOLDER)) {
+            if (!query.contains(ScanQuery.PLACE_HOLDER)) {
                 throw new IllegalArgumentException("No place holder in partition query: " + query);
             }
+            return query;
+        }
+        StringBuilder qry = new StringBuilder();
+        qry.append(getQuery(schema))
+                .append(" WHERE ")
+                .append(ScanQuery.PLACE_HOLDER);
+        query = qry.toString();
+        return query;
+    }
+
+    String getQuery(ResultSetSchema schema) {
+        if (query != null) {
             return query;
         }
         StringJoiner sel = new StringJoiner(",");
         schema.getColumns().forEach(c -> sel.add(c.sqlExpression()));
         StringBuilder qry = new StringBuilder();
-        qry.append("SELECT ").append(sel.toString()).append(" FROM ").append(table);
-        if (withPlaceHolder) qry.append(" WHERE ").append(ScanQuery.PLACE_HOLDER);
+        qry.append("SELECT ")
+                .append(sel.toString())
+                .append(" FROM ")
+                .append(quotedTableName());
         query = qry.toString();
         return query;
     }
 
     Stream<Partition> newPartitionStream() throws SQLException {
-        String mxQuery = "SELECT min(" + partitionColumn + "), " + "max(" + partitionColumn + ") FROM " + table;
-        List<List<Long>> l = ds.execute(mxQuery, Long.class);
+        String mxQuery = "SELECT min(" + partitionColumn + "), " + "max(" + partitionColumn + ") FROM " + quotedTableName();
+        List<List<Long>> l = dataSource.execute(mxQuery, Long.class);
         Long min = l.get(0).get(0);
         Long max = l.get(0).get(1);
-        if (min == null && max == null) throw new EmptyTableException(table);
+        if (min == null && max == null) throw new EmptyTableException(tableName);
         logger.info("Min " + partitionColumn + ": " + min);
         logger.info("Max " + partitionColumn + ": " + max);
         return new Partition(partitionColumn, min, max).split(partitionNumber).stream();
+    }
+
+    String quotedTableName() {
+        return String.format("`%s`", tableName);
     }
 }

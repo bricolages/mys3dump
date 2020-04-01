@@ -1,6 +1,9 @@
 package org.bricolages.mys3dump;
 
 import org.apache.log4j.Logger;
+import org.bricolages.mys3dump.exception.ApplicationException;
+import org.bricolages.mys3dump.exception.EmptyTableException;
+
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +28,7 @@ class ScanQueryBuilder {
         this.tableName = tableName;
     }
 
-    public List<ScanQuery> getScanQueries() throws SQLException {
+    public List<ScanQuery> getScanQueries() throws SQLException, ApplicationException {
         ResultSetSchema schema = this.dataSource.getTableSchema(tableName);
         if (hasPartitionInfo()) {
             return newPartitionStream().map(part -> new ScanQuery(getQueryWithPlaceHolder(schema), new Partition(partitionColumn, part.start, part.end))).collect(Collectors.toList());

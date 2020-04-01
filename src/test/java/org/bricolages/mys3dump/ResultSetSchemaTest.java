@@ -16,39 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class ResultSetSchemaTest {
 
-    @Mock
     ResultSetMetaData metadata;
-
-    class Column {
-        final String   name;
-        final int      type;
-        final String   typeName;
-
-        Column(String name, int type, String typeName) {
-            this.name = name;
-            this.type = type;
-            this.typeName = typeName;
-        }
-    }
-
-    final List<Column> cols = Arrays.asList(
-            new Column("c1", 1, "INTEGER"),
-            new Column("c2", 2, "GEOMETRY")
-    );
 
     @BeforeEach
     void init() throws Exception {
-        when(metadata.getColumnCount()).thenReturn(cols.size());
-        int i = 0;
-        for(Column c : cols) {
-            i++;
-            when(metadata.getColumnName(i)).thenReturn(c.name);
-            when(metadata.getColumnType(i)).thenReturn(c.type);
-            when(metadata.getColumnTypeName(i)).thenReturn(c.typeName);
-        }
+        metadata = (new ResultSetMetaDataMock()).make();
     }
 
     @Test
@@ -60,15 +34,15 @@ class ResultSetSchemaTest {
     @Test
     void getColumns() throws SQLException {
         ResultSetSchema schema = ResultSetSchema.newInstance(metadata);
-        assertTrue(schema.getColumns().get(0) instanceof ResultSetColumn);
+        assertTrue(schema.getColumns().get(0) != null);
     }
 
     @Test
     void getColumnTypes() throws SQLException {
         ResultSetSchema schema = ResultSetSchema.newInstance(metadata);
-        int i = 0;
+        int i = 1;
         for(int t : schema.getColumnTypes()) {
-            assertEquals(t, cols.get(i).type);
+            assertEquals(t, metadata.getColumnType(i));
             i++;
         }
     }
@@ -76,9 +50,9 @@ class ResultSetSchemaTest {
     @Test
     void getColumnNames() throws SQLException {
         ResultSetSchema schema = ResultSetSchema.newInstance(metadata);
-        int i = 0;
+        int i = 1;
         for(String t : schema.getColumnNames()) {
-            assertEquals(t, cols.get(i).name);
+            assertEquals(t, metadata.getColumnName(i));
             i++;
         }
     }

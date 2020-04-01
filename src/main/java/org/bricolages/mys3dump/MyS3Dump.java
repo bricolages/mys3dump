@@ -2,6 +2,8 @@ package org.bricolages.mys3dump;
 
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
+import org.bricolages.mys3dump.exception.ApplicationException;
+import org.bricolages.mys3dump.exception.EmptyTableException;
 
 import java.io.IOException;
 import java.sql.*;
@@ -13,7 +15,7 @@ import java.util.stream.IntStream;
 public class MyS3Dump {
     static private final Logger logger = Logger.getLogger(MyS3Dump.class);
 
-    public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, ExecutionException, InterruptedException {
+    public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, ExecutionException, InterruptedException, ApplicationException {
         Parameters params = new Parameters(args);
         MySQLDataSource myds = new MySQLDataSource(params.getHost(), params.getPort(), params.getDatabase(), params.getUsername(), params.getPassword(), params.getConnectionProperty());
         try {

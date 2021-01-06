@@ -1,0 +1,4 @@
+#!/bin/bash
+
+. $(dirname $0)/set-java-home.sh
+$(dirname $0)/../gradlew "$@"

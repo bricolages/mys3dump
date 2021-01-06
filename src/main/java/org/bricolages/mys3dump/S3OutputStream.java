@@ -2,7 +2,7 @@ package org.bricolages.mys3dump;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
@@ -30,7 +30,7 @@ class S3OutputStream extends ByteArrayOutputStream {
         this.bucket = bucket;
         this.key = key;
         this.compress = compress;
-        this.client = new AmazonS3Client(new DefaultAWSCredentialsProviderChain());
+        this.client = AmazonS3ClientBuilder.defaultClient();
     }
 
     void upload() {

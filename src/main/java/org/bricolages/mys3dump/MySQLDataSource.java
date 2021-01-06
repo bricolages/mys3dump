@@ -22,7 +22,6 @@ class MySQLDataSource {
         this.connectionString = "jdbc:mysql://" + host + ":" + port + "/" + db + "?" + property;
         this.username = username;
         this.password = password;
-        Class.forName("com.mysql.jdbc.Driver");
     }
 
     Connection newConnection() throws SQLException {

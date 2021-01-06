@@ -28,12 +28,12 @@ class ScanQueryBuilder {
         this.tableName = tableName;
     }
 
-    public List<ScanQuery> getScanQueries() throws SQLException, ApplicationException {
+    public List<ScanQuery> buildScanQueries() throws SQLException, ApplicationException {
         ResultSetSchema schema = this.dataSource.getTableSchema(tableName);
         if (hasPartitionInfo()) {
-            return newPartitionStream().map(part -> new ScanQuery(getQueryWithPlaceHolder(schema), new Partition(partitionColumn, part.start, part.end))).collect(Collectors.toList());
+            return newPartitionStream().map(part -> new ScanQuery(buildQueryWithPlaceHolder(schema), new Partition(partitionColumn, part.start, part.end))).collect(Collectors.toList());
         } else {
-            return Collections.singletonList(new ScanQuery(getQuery(schema)));
+            return Collections.singletonList(new ScanQuery(buildQuery(schema)));
         }
     }
 
@@ -52,34 +52,38 @@ class ScanQueryBuilder {
         return partitionColumn != null;
     }
 
-    String getQueryWithPlaceHolder(ResultSetSchema schema) {
-        if (query != null) {
-            if (!query.contains(ScanQuery.PARTITION_CONDITION_PLACE_HOLDER)) {
-                throw new IllegalArgumentException("No place holder in partition query: " + query);
+    String buildQueryWithPlaceHolder(ResultSetSchema schema) {
+        if (this.query != null) {
+            if (! this.query.contains(ScanQuery.PARTITION_CONDITION_PLACE_HOLDER)) {
+                throw new IllegalArgumentException("No place holder in partition query: " + this.query);
             }
-            return query;
+            return this.query;
         }
-        StringBuilder qry = new StringBuilder();
-        qry.append(getQuery(schema))
-                .append(" WHERE ")
-                .append(ScanQuery.PARTITION_CONDITION_PLACE_HOLDER);
-        query = qry.toString();
-        return query;
+        else {
+            StringBuilder qry = new StringBuilder();
+            qry.append(buildQuery(schema))
+                    .append(" WHERE ")
+                    .append(ScanQuery.PARTITION_CONDITION_PLACE_HOLDER);
+            this.query = qry.toString();
+            return this.query;
+        }
     }
 
-    String getQuery(ResultSetSchema schema) {
-        if (query != null) {
-            return query;
+    String buildQuery(ResultSetSchema schema) {
+        if (this.query != null) {
+            return this.query;
         }
-        StringJoiner sel = new StringJoiner(",");
-        schema.getColumns().forEach(c -> sel.add(c.sqlExpression()));
-        StringBuilder qry = new StringBuilder();
-        qry.append("SELECT ")
-                .append(sel.toString())
-                .append(" FROM ")
-                .append(quotedTableName());
-        query = qry.toString();
-        return query;
+        else {
+            StringJoiner sel = new StringJoiner(",");
+            schema.getColumns().forEach(c -> sel.add(c.sqlExpression()));
+            StringBuilder qry = new StringBuilder();
+            qry.append("SELECT ")
+                    .append(sel.toString())
+                    .append(" FROM ")
+                    .append(quotedTableName());
+            this.query = qry.toString();
+            return this.query;
+        }
     }
 
     Stream<Partition> newPartitionStream() throws SQLException {

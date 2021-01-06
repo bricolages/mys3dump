@@ -10,15 +10,13 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by shimpei-kodama on 2016/03/01.
  */
+@Slf4j
 class ScanQueryBuilder {
-    static private final Logger logger = LoggerFactory.getLogger(ScanQueryBuilder.class);
-
     private final String tableName;
     private String query;
     private MySQLDataSource dataSource;

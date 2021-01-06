@@ -10,15 +10,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by shimpei-kodama on 2016/02/08.
  */
+@Slf4j
 class S3OutputStream extends ByteArrayOutputStream {
-    static private final Logger logger = LoggerFactory.getLogger(S3OutputStream.class);
-
     private final int EMPTY_GZIPPED_FILESIZE = 20;
     private final int EMPTY_PLAIN_FILESIZE = 0;
 

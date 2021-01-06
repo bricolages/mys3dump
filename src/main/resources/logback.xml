@@ -1,0 +1,15 @@
+<configuration>
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>%d [%t] %5level: %logger: %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="console" />
+  </root>
+
+  <logger name="com.amazonaws" level="WARN" />
+  <logger name="org.bricolages.mys3dump" level="INFO" />
+</configuration>

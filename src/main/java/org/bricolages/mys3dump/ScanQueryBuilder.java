@@ -1,6 +1,5 @@
 package org.bricolages.mys3dump;
 
-import org.apache.log4j.Logger;
 import org.bricolages.mys3dump.exception.ApplicationException;
 import org.bricolages.mys3dump.exception.EmptyTableException;
 
@@ -11,11 +10,14 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by shimpei-kodama on 2016/03/01.
  */
 class ScanQueryBuilder {
-    private final Logger logger = Logger.getLogger(this.getClass());
+    static private final Logger logger = LoggerFactory.getLogger(ScanQueryBuilder.class);
 
     private final String tableName;
     private String query;

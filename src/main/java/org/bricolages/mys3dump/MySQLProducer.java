@@ -1,15 +1,16 @@
 package org.bricolages.mys3dump;
 
-import org.apache.log4j.Logger;
-
 import java.sql.*;
 import java.util.concurrent.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shimpei-kodama on 2016/02/10.
  */
 class MySQLProducer {
-    private final Logger logger = Logger.getLogger(this.getClass());
+    static private final Logger logger = LoggerFactory.getLogger(MySQLProducer.class);
 
     private final BlockingQueue<char[][]> queue;
     private final MySQLDataSource myds;

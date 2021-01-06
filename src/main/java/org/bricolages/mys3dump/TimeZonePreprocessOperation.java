@@ -1,6 +1,5 @@
 package org.bricolages.mys3dump;
 
-import org.apache.log4j.Logger;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -11,12 +10,14 @@ import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by shimpei-kodama on 2016/11/07.
  */
 class TimeZonePreprocessOperation implements PreprocessOperation {
-
-    private final Logger logger = Logger.getLogger(this.getClass());
+    static private final Logger logger = LoggerFactory.getLogger(TimeZonePreprocessOperation.class);
 
     private final DateTimeFormatter srcDateTimeFormat = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd['T'][ ]HH:mm:ss")).appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true).toFormatter();
     private final DateTimeFormatter dstDateTimeFormat = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true).toFormatter();

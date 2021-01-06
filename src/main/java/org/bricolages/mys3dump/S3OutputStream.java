@@ -5,17 +5,19 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by shimpei-kodama on 2016/02/08.
  */
 class S3OutputStream extends ByteArrayOutputStream {
-    private final Logger logger = Logger.getLogger(this.getClass());
+    static private final Logger logger = LoggerFactory.getLogger(S3OutputStream.class);
 
     private final int EMPTY_GZIPPED_FILESIZE = 20;
     private final int EMPTY_PLAIN_FILESIZE = 0;

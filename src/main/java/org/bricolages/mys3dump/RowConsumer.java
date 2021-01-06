@@ -1,14 +1,16 @@
 package org.bricolages.mys3dump;
 
-import org.apache.log4j.Logger;
-
 import java.util.concurrent.BlockingQueue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shimpei-kodama on 2016/02/08.
  */
 class RowConsumer {
-    private final Logger logger = Logger.getLogger(this.getClass());
+    static private final Logger logger = LoggerFactory.getLogger(RowConsumer.class);
+
     private final BlockingQueue<char[][]> queue;
     private final RowWriterFactory writerFactory;
 

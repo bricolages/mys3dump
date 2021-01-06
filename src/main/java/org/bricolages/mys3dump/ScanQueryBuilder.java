@@ -54,7 +54,7 @@ class ScanQueryBuilder {
 
     String getQueryWithPlaceHolder(ResultSetSchema schema) {
         if (query != null) {
-            if (!query.contains(ScanQuery.PLACE_HOLDER)) {
+            if (!query.contains(ScanQuery.PARTITION_CONDITION_PLACE_HOLDER)) {
                 throw new IllegalArgumentException("No place holder in partition query: " + query);
             }
             return query;
@@ -62,7 +62,7 @@ class ScanQueryBuilder {
         StringBuilder qry = new StringBuilder();
         qry.append(getQuery(schema))
                 .append(" WHERE ")
-                .append(ScanQuery.PLACE_HOLDER);
+                .append(ScanQuery.PARTITION_CONDITION_PLACE_HOLDER);
         query = qry.toString();
         return query;
     }

@@ -1,17 +1,19 @@
 package org.bricolages.mys3dump;
 
-import org.apache.log4j.Logger;
 import org.bricolages.mys3dump.exception.ApplicationException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by shimpei-kodama on 2016/02/18.
  */
 class MySQLDataSource {
-    private final Logger logger = Logger.getLogger(this.getClass());
+    static private final Logger logger = LoggerFactory.getLogger(MySQLDataSource.class);
 
     private final String connectionString;
     private final String username;

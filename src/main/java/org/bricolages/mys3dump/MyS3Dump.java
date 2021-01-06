@@ -1,9 +1,9 @@
 package org.bricolages.mys3dump;
 
-import org.apache.commons.cli.*;
-import org.apache.log4j.Logger;
 import org.bricolages.mys3dump.exception.ApplicationException;
 import org.bricolages.mys3dump.exception.EmptyTableException;
+
+import org.apache.commons.cli.*;
 
 import java.io.IOException;
 import java.sql.*;
@@ -12,8 +12,11 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MyS3Dump {
-    static private final Logger logger = Logger.getLogger(MyS3Dump.class);
+    static private final Logger logger = LoggerFactory.getLogger(MyS3Dump.class);
 
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, ExecutionException, InterruptedException, ApplicationException {
         Parameters params = new Parameters(args);
@@ -21,7 +24,7 @@ public class MyS3Dump {
         try {
             ScanQueryBuilder builder = new ScanQueryBuilder(myds, params.getTable()).setQuery(params.getQuery())
                     .setPartitionInfo(params.getPartitionColumn(), params.getPartitionNumber());
-            List<ScanQuery> queries = builder.getScanQueries();
+            List<ScanQuery> queries = builder.buildScanQueries();
             ResultSetSchema resultSetSchema = ResultSetSchema.newInstance(myds.getQueryMetadata(queries.get(0)));
             Preprocessor preprocessor = new Preprocessor(resultSetSchema, new TimeZonePreprocessOperation(params.getSrcZoneOffset(), params.getDstZoneOffset()));
             RowFormatter rowFormatter = RowFormatter.newInstance(params.getFormat(), resultSetSchema);

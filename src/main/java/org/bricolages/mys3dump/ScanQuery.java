@@ -4,7 +4,7 @@ package org.bricolages.mys3dump;
  * Created by shimpei-kodama on 2016/03/01.
  */
 class ScanQuery {
-    public static final String PLACE_HOLDER = "@PARTITION_CONDITION@";
+    public static final String PARTITION_CONDITION_PLACE_HOLDER = "@PARTITION_CONDITION@";
     private final String query;
     private final Partition partition;
 
@@ -21,6 +21,6 @@ class ScanQuery {
     @Override
     public String toString() {
         if (partition == null) return query;
-        return query.replaceAll(PLACE_HOLDER, partition.toString());
+        return query.replaceAll(PARTITION_CONDITION_PLACE_HOLDER, partition.toString());
     }
 }

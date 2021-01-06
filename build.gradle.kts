@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     java
     application
@@ -27,15 +29,23 @@ dependencies {
     implementation("org.slf4j:slf4j-api:1.7.30")
     implementation("com.jcraft:jsch:0.1.53")
     implementation("commons-cli:commons-cli:1.3.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.6.+")
-    //testImplementation("junit:junit:4.13.+")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.+")
     testImplementation("org.mockito:mockito-core:3.3.+")
     testImplementation("org.mockito:mockito-junit-jupiter:3.3.+")
 }
 
-tasks.getByName<JavaCompile>("compileJava") {
+tasks.compileJava {
     options.compilerArgs = listOf(
         "-Xlint:deprecation",
         "-Xlint:unchecked"
     )
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("skipped", "passed", "failed")
+        showStandardStreams = true
+        exceptionFormat = TestExceptionFormat.FULL
+    }
 }

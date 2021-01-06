@@ -29,9 +29,14 @@ dependencies {
     implementation("org.slf4j:slf4j-api:1.7.30")
     implementation("com.jcraft:jsch:0.1.53")
     implementation("commons-cli:commons-cli:1.3.1")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.+")
     testImplementation("org.mockito:mockito-core:3.3.+")
     testImplementation("org.mockito:mockito-junit-jupiter:3.3.+")
+
+    implementation("org.projectlombok:lombok:1.18.16")
+    annotationProcessor("org.projectlombok:lombok:1.18.6")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.6")
 }
 
 tasks.compileJava {

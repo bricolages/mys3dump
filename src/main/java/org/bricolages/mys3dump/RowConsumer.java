@@ -2,15 +2,13 @@ package org.bricolages.mys3dump;
 
 import java.util.concurrent.BlockingQueue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by shimpei-kodama on 2016/02/08.
  */
+@Slf4j
 class RowConsumer {
-    static private final Logger logger = LoggerFactory.getLogger(RowConsumer.class);
-
     private final BlockingQueue<char[][]> queue;
     private final RowWriterFactory writerFactory;
 

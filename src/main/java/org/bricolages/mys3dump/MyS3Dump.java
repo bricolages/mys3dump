@@ -12,12 +12,10 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MyS3Dump {
-    static private final Logger logger = LoggerFactory.getLogger(MyS3Dump.class);
-
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, ExecutionException, InterruptedException, ApplicationException {
         Parameters params = new Parameters(args);
         MySQLDataSource myds = new MySQLDataSource(params.getHost(), params.getPort(), params.getDatabase(), params.getUsername(), params.getPassword(), params.getConnectionProperty());

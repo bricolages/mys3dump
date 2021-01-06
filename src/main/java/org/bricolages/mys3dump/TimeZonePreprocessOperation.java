@@ -10,17 +10,16 @@ import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by shimpei-kodama on 2016/11/07.
  */
+@Slf4j
 class TimeZonePreprocessOperation implements PreprocessOperation {
-    static private final Logger logger = LoggerFactory.getLogger(TimeZonePreprocessOperation.class);
+    static private final DateTimeFormatter SRC_DATE_TIME_FORMAT = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd['T'][ ]HH:mm:ss")).appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true).toFormatter();
+    static private final DateTimeFormatter DST_DATE_TIME_FORMAT = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true).toFormatter();
 
-    private final DateTimeFormatter srcDateTimeFormat = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd['T'][ ]HH:mm:ss")).appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true).toFormatter();
-    private final DateTimeFormatter dstDateTimeFormat = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true).toFormatter();
     private final ZoneOffset srcOffset;
     private final ZoneOffset dstOffset;
     private List<Integer> applicableTypes = Arrays.asList(Types.TIMESTAMP);
@@ -37,9 +36,9 @@ class TimeZonePreprocessOperation implements PreprocessOperation {
         if (srcOffset.compareTo(dstOffset) == 0 || value.equals("0000-00-00 00:00:00")) {
             return value;
         }
-        LocalDateTime local_time = LocalDateTime.parse(value, srcDateTimeFormat);
+        LocalDateTime local_time = LocalDateTime.parse(value, SRC_DATE_TIME_FORMAT);
         OffsetDateTime src_time = OffsetDateTime.of(local_time, srcOffset);
-        return src_time.withOffsetSameInstant(dstOffset).format(dstDateTimeFormat);
+        return src_time.withOffsetSameInstant(dstOffset).format(DST_DATE_TIME_FORMAT);
     }
 
     public Boolean isApplicableTo(int type) {

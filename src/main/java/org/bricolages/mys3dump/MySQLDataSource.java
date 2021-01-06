@@ -6,15 +6,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by shimpei-kodama on 2016/02/18.
  */
+@Slf4j
 class MySQLDataSource {
-    static private final Logger logger = LoggerFactory.getLogger(MySQLDataSource.class);
-
     private final String connectionString;
     private final String username;
     private final String password;

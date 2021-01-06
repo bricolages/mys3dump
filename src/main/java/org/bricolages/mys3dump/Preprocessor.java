@@ -3,15 +3,13 @@ package org.bricolages.mys3dump;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by shimpei-kodama on 2016/11/07.
  */
+@Slf4j
 class Preprocessor {
-    static private final Logger logger = LoggerFactory.getLogger(Preprocessor.class);
-
     private final Map<Integer, List<PreprocessOperation>> columnOperations;
     private final Boolean hasApplicableOperation;
 

@@ -1,7 +1,8 @@
 package org.bricolages.mys3dump;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
@@ -21,13 +22,13 @@ class S3OutputLocation {
     private final String bucket;
     private final String prefix;
     private final String delimiter;
-    private final AmazonS3Client client;
+    private final AmazonS3 client;
 
     public S3OutputLocation(String bucket, String prefix, String delimiter) {
         this.bucket = bucket.replaceAll("/", "");
         this.prefix = prefix.replaceFirst("^/", "").replaceAll("//", "/");
         this.delimiter = delimiter;
-        this.client = new AmazonS3Client(new DefaultAWSCredentialsProviderChain());
+        this.client = AmazonS3ClientBuilder.defaultClient();
     }
 
     void deleteIfExist() {

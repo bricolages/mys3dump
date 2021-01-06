@@ -4,7 +4,6 @@ Dumps MySQL table to S3 parallely.
 
 ## Build & Test
 
-Following command builds executable JAR file with dependencies.
 ```
 % gradle build
 ```

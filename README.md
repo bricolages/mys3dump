@@ -59,12 +59,12 @@ Options:
 ## Build & Test
 
 ```
-% ./gradlew build
+% ./script/gradle build
 ```
 
 ## Packaging
 
 ```
-% ./gradlew shadowJar
+% ./script/gradle shadowJar
 ```
 This generates mys3dump-X.X.X-all.jar in the build/libs/ directory.

@@ -38,7 +38,7 @@ class S3OutputLocation {
         do {
             List<String> keys = objects.getObjectSummaries().stream().map(S3ObjectSummary::getKey).collect(Collectors.toList());
             for (String key : keys) {
-                logger.info("Delete object: " + bucket + "/" + key);
+                logger.info("Delete object: s3://" + bucket + "/" + key);
             }
             deleteObjects(keys);
         } while (!isListEmpty(objects = listNextObjects(objects)));

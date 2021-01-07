@@ -38,7 +38,7 @@ class S3OutputStream extends ByteArrayOutputStream {
         if (compress) metadata.setContentEncoding("gzip");
         metadata.setContentLength(this.count);
         client.putObject(new PutObjectRequest(bucket, key, new ByteArrayInputStream(this.toByteArray()), metadata));
-        logger.info("S3 object created " + "(" + this.count + " bytes): " + bucket + "/" + key);
+        logger.info("S3 object created " + "(" + this.count + " bytes): s3://" + bucket + "/" + key);
         logger.debug("Memory Usage:" + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
         this.reset();
     }

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+. $(dirname $0)/set-java-home.sh
+
+jar=$(ls build/libs/mys3dump-*-all.jar | sort -r | tail -n1)
+exec java -jar "$jar" "$@"

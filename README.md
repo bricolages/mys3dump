@@ -2,6 +2,10 @@
 
 Dumps MySQL table to S3 parallely.
 
+## Prerequisites
+
+- Java 11
+
 ## Usage
 
 ```
@@ -52,19 +56,9 @@ Options:
  -x,--prefix <arg>                           S3 object prefix
 ```
 
-## Prerequisites
-
-- JDK 8
-
 ## Build & Test
 
 ```
 % ./script/gradle build
 ```
-
-## Packaging
-
-```
-% ./script/gradle shadowJar
-```
-This generates mys3dump-X.X.X-all.jar in the build/libs/ directory.
+This generates an executable jar `mys3dump-X.X.X-all.jar` in the build/libs/ directory.

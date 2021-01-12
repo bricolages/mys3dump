@@ -30,10 +30,17 @@ dependencies {
     implementation("com.jcraft:jsch:0.1.53")
     implementation("commons-cli:commons-cli:1.3.1")
 
+    // JAXB
+    implementation("javax.xml.bind:jaxb-api:+")
+    implementation("com.sun.xml.bind:jaxb-core:+")
+    implementation("com.sun.xml.bind:jaxb-impl:+")
+    implementation("com.sun.activation:javax.activation:+")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.+")
     testImplementation("org.mockito:mockito-core:3.3.+")
     testImplementation("org.mockito:mockito-junit-jupiter:3.3.+")
 
+    // Lombok
     implementation("org.projectlombok:lombok:1.18.16")
     annotationProcessor("org.projectlombok:lombok:1.18.6")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.6")

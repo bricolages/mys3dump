@@ -2,6 +2,7 @@ package org.bricolages.mys3dump;
 
 import java.sql.*;
 import java.util.concurrent.*;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,12 +19,25 @@ class MySQLProducer {
         this.myds = myds;
     }
 
+    int getFetchSize() {
+        return Optional.ofNullable(System.getenv("RESULT_SET_FETCH_SIZE")).map(Integer::parseInt).orElse(1000);
+    }
+
     WorkerResult execute(String query) {
         WorkerResult res = new WorkerResult(Thread.currentThread().getName());
         try {
             Connection conn = myds.newConnection();
+            conn.setAutoCommit(false);   // This is required to use setFetchSize.
+
+            // MariaDB Connector/J does not update net_write_timeout on streaming_mode, set it explicitly.
             try (Statement stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY, java.sql.ResultSet.CONCUR_READ_ONLY)) {
-                stmt.setFetchSize(Integer.MIN_VALUE);
+                String paramQuery = "set net_write_timeout = 600";
+                logger.info("[SQL] " + paramQuery);
+                stmt.executeUpdate(paramQuery);
+            }
+
+            try (Statement stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY, java.sql.ResultSet.CONCUR_READ_ONLY)) {
+                stmt.setFetchSize(getFetchSize());   // Enables result set streaming mode
                 logger.info("Execute query: " + query);
                 try (ResultSet rs = stmt.executeQuery(query)) {
                     logger.info("Query returned");

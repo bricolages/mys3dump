@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation("mysql:mysql-connector-java:8.0.22")
+    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.1")
     implementation("com.amazonaws:aws-java-sdk-s3:1.11.932")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("org.slf4j:slf4j-api:1.7.30")

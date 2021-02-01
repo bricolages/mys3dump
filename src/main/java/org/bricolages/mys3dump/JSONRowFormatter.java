@@ -45,6 +45,7 @@ class JSONRowFormatter implements RowFormatter {
             case Types.BIGINT:
             case Types.ARRAY:
                 return value;
+            // escape as string to prevent accuracy problem when loading
             case Types.FLOAT:
             case Types.REAL:
             case Types.DOUBLE:

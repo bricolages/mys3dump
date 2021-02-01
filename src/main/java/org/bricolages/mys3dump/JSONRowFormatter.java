@@ -39,17 +39,18 @@ class JSONRowFormatter implements RowFormatter {
     char[] formatValue(char[] value, int columnType) {
         // expect value is not null
         switch (columnType) {
-            case Types.FLOAT:
-            case Types.REAL:
-            case Types.DOUBLE:
             case Types.TINYINT:
             case Types.SMALLINT:
             case Types.INTEGER:
             case Types.BIGINT:
-            case Types.NUMERIC:
-            case Types.DECIMAL:
             case Types.ARRAY:
                 return value;
+            // escape as string to prevent accuracy problem when loading
+            case Types.FLOAT:
+            case Types.REAL:
+            case Types.DOUBLE:
+            case Types.NUMERIC:
+            case Types.DECIMAL:
             default:
                 return escape(value);
         }

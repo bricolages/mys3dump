@@ -1,5 +1,8 @@
 # Release Note
 
+## version 1.2.1
+- [CHANGE] Escape non-integer value to dump json.
+
 ## version 1.2.0
 - [CHANGE] Use MariaDB Connector/J instead of MySQL Connector/J,
   to avoid unexpected performance degration of MySQL Connector 8.

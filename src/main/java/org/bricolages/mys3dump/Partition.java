@@ -27,7 +27,7 @@ class Partition {
             partitionSize = (long) Math.ceil(estRowCount / (double) n);
         }
         for (Long pStart = start, pEnd; pStart <= end; pStart = pEnd + 1) {
-            pEnd = pStart + partitionSize;
+            pEnd = pStart + partitionSize - 1;
             if (pEnd >= end) pEnd = end;
             pts.add(new Partition(columnName, pStart, pEnd));
         }
